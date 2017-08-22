@@ -48,11 +48,6 @@
                 noFlag:false
             }
         },
-        // routes: {
-        //     beforeRouteLeave (to, from, next) {
-        //       sessionStorage.setItem('schoolPageNum','');
-        //     }
-        // },
         methods:{
             setImgUrlFromId(id) {
               return WEBPACK_CONIFG_HOST +'sys/appstoreservice/attrs/preview.do?token=' + id+'&type=3';
@@ -79,14 +74,6 @@
                 var responseData = response.data.datas.appscount.rows;
                 if (response.data.code == 0) {
                     if (responseData && responseData.length>0) {
-                      // that.customerCases = responseData.map(function(item){
-                      //   item.APP_COUNT=item.APPCOUNT;
-                      //   item.TYPE = 'custom';
-                      //   item.BADGE = that.setImgUrlFromId(item.BADGE);
-                      //   item.APP_ID = JSON.parse(that.$route.query.item).WID;
-                      //   item.PARENTTYPE = 'school';
-                      //   return item;
-                      // });
                       responseData.map(function(item){
                         var itemObj = item;
                         itemObj.APP_COUNT=item.APPCOUNT;

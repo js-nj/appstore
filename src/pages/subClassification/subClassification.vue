@@ -1,5 +1,5 @@
 <template>
-    <div :style="{height:subClassificationContainerHeight}">
+    <div :style="{height:subClassificationContainerHeight}" >
         <div v-if="(this.parentIndex =='index')">
           <mt-search
             v-model="value"
@@ -30,7 +30,7 @@
             placeholder="搜索" class="as-search" @input="search" @canceled="goIndexPage">
           </mt-search>
           <div  class="sub-case-container">
-            <mt-loadmore  v-if="customerCases.length>0"  :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" :autoFill="false" ref="loadmore" >
+            <mt-loadmore  v-if="customerCases.length>0"  :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" :autoFill="false" ref="loadmore">
               <list-item :items="customerCases"></list-item>
               <div class="as-nullData bh-color-gray-lv2" v-show="allLoaded && customerCases.length>5">暂无更多数据</div>
             </mt-loadmore>
@@ -129,7 +129,8 @@ input[type="search" i]:enabled:read-write:-webkit-any(:focus,:hover)::-webkit-se
 <script>
     import { Button ,MessageBox,Toast,Loadmore} from 'bh-mint-ui2';
     import listItem from '../../components/listItem.vue';
-    import Scroll from '../../components/scroll.vue';
+    import wechatShare from '../../../static/mobile/js/wechatShare.js';
+    //import Scroll from '../../components/scroll.vue';
     import api from '../../api.js';
     import axios  from 'axios';
     import _ from 'lodash'; //引入lodash
@@ -160,6 +161,10 @@ input[type="search" i]:enabled:read-write:-webkit-any(:focus,:hover)::-webkit-se
         created() {
             var that = this;
             BH_MIXIN_SDK.setTitleText('应用列表');
+            // setTimeout(function(){
+            //     console.log('preventBodyScroll -subc')
+            //     wechatShare.preventBodyScroll();
+            // },1000);
             sessionStorage.setItem('subClassificationPageNum','');
             //设置billdetail框部分的高度
             this.subClassificationContainerHeight = (document.body.clientHeight) + 'px';
@@ -201,23 +206,6 @@ input[type="search" i]:enabled:read-write:-webkit-any(:focus,:hover)::-webkit-se
               console.log('totalapp')
               that.ajaxAppsByConditions('totalApp');
             }
-            // window.addEventListener('scroll', function() {
-            //   var bodyRect = getRect(document.body);
-            //   if (bodyRect.isBottom) ajaxLoad();
-            // });
-
-            // function ajaxLoad() {
-            //   Toast('没有更多应用了');
-            // }
-
-            // function getRect(ele) {
-            //   var inHeight = window.innerHeight,
-            //     rect = ele.getBoundingClientRect();
-
-            //   rect.isVisible = rect.top - inHeight < 0; // 是否在可视区域
-            //   rect.isBottom = rect.bottom - inHeight <= 0;
-            //   return rect;
-            // }
         },
         methods:{
           setTagSelected(wid,num) {
@@ -306,6 +294,10 @@ input[type="search" i]:enabled:read-write:-webkit-any(:focus,:hover)::-webkit-se
                       itemObj.IMAGE = that.setImgUrlFromId(item.IMAGE);
                       that.customerCases.push(itemObj);
                   });
+                  setTimeout(function(){
+                    window.scrollTo(0,0);
+                    document.body.scrollTop = 0;
+                  },20);
                   if (responseData.length < response.data.datas.list.pageSize) {
                     that.allLoaded = true;
                     if (that.$refs.loadmore) {
@@ -344,16 +336,6 @@ input[type="search" i]:enabled:read-write:-webkit-any(:focus,:hover)::-webkit-se
               that.ajaxAppsByConditions('','more');
             }
           },
-          
-          // onRefresh(done) {
-          //   Toast('没有更多应用了');
-          //   done();
-          // },
-          // onInfinite(done){
-          //   debugger
-          //   this.$el.querySelector('.load-more').style.display = 'none';
-          //   done()
-          // },
           search: _.debounce(function () {
                 //debugger
                 //删除已经结束的请求
@@ -387,7 +369,6 @@ input[type="search" i]:enabled:read-write:-webkit-any(:focus,:hover)::-webkit-se
             [MessageBox.name]: MessageBox,
             [Toast.name]: Toast,
             [Loadmore.name]: Loadmore,
-            'v-scroll': Scroll,
             listItem
         }
     }

@@ -2,7 +2,7 @@
     <div>
         <mt-tab-container v-model="selected">
           <!-- 首页，推荐应用 -->
-          <mt-tab-container-item id="bestRecomend">
+          <mt-tab-container-item id="bestRecomend" >
               <div class="as-index-search-instead" @click="goSubClassification({parentIndex:'index'})"></div>
               <div class="as-index-searchBg" >
                 <img class="as-index-searchImg" :src="'./static/assets/indexSearch.png'" />
@@ -15,7 +15,7 @@
               <com-test :imgs="imgs"></com-test>
               <div class="as-content" id="as-index-items">
                 <!-- tab模板 -->
-                <div v-for="item in mainDatas">
+                <div v-for="item in mainDatas" v-if="item.tabContent.length>0">
                  <div class="bh-pv-16 as-tab">
                    <div class="as-tab-content bh-ph-16" :class="item.tabType">
                      <p class="as-tab-title">{{item.tabName}}</p>                  
@@ -67,9 +67,9 @@
                         </div>
                       </div>  
                     </div>
-                    <div v-else :style="{height:mybillTabcontentWidth}">
-                        <div class="sub-tag-container">
-                           <div class="sub-title bh-pv-16 bh-color-gray-lv2" :style="{width:subTagCont}">
+                    <div v-else :style="{height:mybillTabcontentWidth}" >
+                        <div class="sub-tag-container scroll">
+                           <div class="sub-title bh-pv-16 bh-color-gray-lv2" :style="{width:subTagCont}" >
                                 <label  class="sub-tag" :class="{'sub-tag-selected':subTagAll}" @click="setTagSelected()">全部</label>
                                 <label class="sub-tag" v-for="(item,index) in classifications" :class="{'sub-tag-selected': !subTagAll && index === tagIndex}"  @click="setTagSelected(item.LBDM,index)">{{item.LBMC}}</label>
                             </div> 
@@ -214,7 +214,11 @@
                   sessionStorage.setItem("billSelectedTab",'');
                   sessionStorage.setItem('subClassificationPageNum','');
                   BH_MIXIN_SDK.setTitleText('精品推荐');
+                  console.log('removeEventListener')
+                  document.body.removeEventListener('touchmove', scrollCallback);
                   this.requestBestRecomendAjax();
+                  this.allLoadedGeneratedIndex = false;
+                  this.allLoadedIndex = false;
                   break;
               case 'appType':
                   this.classBestRecomend = 'tab-icon-bestRecomend';
@@ -224,9 +228,13 @@
                   //清除bill Tab 的默认子tab
                   sessionStorage.setItem("billSelectedTab",'');
                   BH_MIXIN_SDK.setTitleText('应用分类');
+                  console.log('removeEventListener')
+                  document.body.removeEventListener('touchmove', scrollCallback);
                   if (this.classifications.length == 0) {
                     this.requestAppTypeAjax();
                   }
+                  this.allLoadedGeneratedIndex = false;
+                  this.allLoadedIndex = false;
                   break;
               case 'myBill':
                   this.classBestRecomend = 'tab-icon-bestRecomend';
@@ -241,6 +249,11 @@
                   this.billGenerated=[];
                   if (sessionStorage.getItem("billSelectedTab")!='AlreadyGenerated') {
                     this.asBillUncheck = false;
+                    this.allLoadedIndex = false;
+                  }else {
+                    console.log('this.allLoadedGeneratedIndex = false mybill')
+                    this.allLoadedGeneratedIndex = false;
+                    //document.body.removeEventListener('touchmove', scrollCallback);
                   }
                   this.requestMyBillAjax();
                   break;
@@ -253,6 +266,9 @@
                   sessionStorage.setItem("billSelectedTab",'toBeGenerated');
                   break;
               case 'AlreadyGenerated':
+                  console.log('this.allLoadedGeneratedIndex = false billSelected')
+                  //this.allLoadedGeneratedIndex = false;
+                  //document.body.removeEventListener('touchmove', scrollCallback);
                   sessionStorage.setItem("billSelectedTab",'AlreadyGenerated');
                   break;
             }
@@ -268,6 +284,11 @@
             that.asBillUncheck = true;
           }
           BH_MIXIN_SDK.setTitleText('APP STORE');
+          
+          // setTimeout(function(){
+          //       console.log('preventBodyScroll-index')
+          //       wechatShare.preventBodyScroll();
+          //   },1000);
           var indexUrl = window.location.href;
           console.log('indexUrl:'+indexUrl);
           //var shareIndexUrl = indexUrl.replace('123','?');
@@ -335,10 +356,6 @@
           });
 
           //判断是否有路由跳转信息，有的话，修改默认tab页
-          //debugger
-          // if (that.$route.query.item && that.$route.query.item.selectedTab) {
-          //   that.selected = that.$route.query.item.selectedTab;
-          // }else 
           if (sessionStorage.getItem("selectedTab")) {
             that.selected = sessionStorage.getItem("selectedTab");
           }
@@ -351,11 +368,24 @@
           document.getElementsByTagName('body')[0].style.height = document.body.clientHeight+'px';
         },
         methods:{
-          // ajaxPageData() {
-          //   console.log('首次请求') 
-          // },
           requestBestRecomendAjax() {
             var self = this;
+            //tab页进来重新请求
+            self.mainDatas = [{
+              tabName:'热门应用',
+              tabContent:[],
+              tabType:'as-tabColor-yellow'
+            },
+            {
+              tabName:'最新应用',
+              tabContent:[],
+              tabType:'as-tabColor-yellow'
+            },
+            {
+              tabName:'客户案例',
+              tabContent:[],
+              tabType:'as-tabColor-primary'
+            }];
             //轮播图数据
             axios({
                 method:"POST",
@@ -473,6 +503,7 @@
                 if (responseData && responseData.length>0) {
                   self.selfDefineTabs = responseData;
                   //循环每一个自定义的tab
+                  //var selfDefineTabsArray = [];
                   self.selfDefineTabs.forEach(function(sub,num){
                       sub.tabType = 'as-tabColor-purple';
                       sub.tabName = sub.NAME1;
@@ -495,26 +526,26 @@
                             };
                             tmpObj.tabContent = subresponseData.map(function(app){
                                 app.IMAGE = self.setImgUrlFromId(app.IMAGE);
-                                //app.PIC = app.IMAGE;
                                 app.TYPE = 'app';
                                 return app;
                             });
                             // debugger
                             self.$set(self.selfDefineTabs, num, _.extend(sub,tmpObj));
+                            //根据请求结构更新父结构的子数据
+                            self.$set(self.mainDatas, num + 3, self.selfDefineTabs[num]);   
+                          }else {
+                            console.log('self.mainDatas:'+self.mainDatas.length)
+                            //无子数据的分类删除掉
+                            //self.mainDatas.splice(num + 3,1);
                           }
-                          //debugger
-                          //把自定义tab数组拼接在self.mainDatas后面
-                          //超过三个，证明之前已有自定义，需去掉，不然重复添加
-                          if (self.mainDatas.length>3) {
-                            self.mainDatas.splice(3);
-                          }
-                          self.mainDatas = self.mainDatas.concat(self.selfDefineTabs[num]);
                         }else {
                           Toast('获取自定义栏内容失败');
                         }
                       }).catch(function(err){
                         Toast(err);
                       });
+                      //按照请求数据的顺序先导入父结构
+                      self.mainDatas = self.mainDatas.concat(self.selfDefineTabs[num]);
                   });
                 }  
               }else {
@@ -676,8 +707,10 @@
                   });
                   if (response.data.datas.list.rows.length < response.data.datas.list.pageSize) {
                     self.allLoadedGeneratedIndex = true; 
-                  }else if (response.data.datas.list.rows.length == response.data.datas.list.pageSize){
+                  }else if (response.data.datas.list.rows.length == response.data.datas.list.pageSize && response.data.datas.list.rows.length < response.data.datas.list.totalSize){
                     sessionStorage.setItem('AlreadyGeneratedPageNum',response.data.datas.list.pageNumber);
+                  }else {
+                    self.allLoadedGeneratedIndex = true; 
                   }
                 }
               }else {
@@ -726,8 +759,10 @@
                   });
                   if (responseData.length < response.data.datas.list.pageSize) {
                     self.allLoadedIndex = true; 
-                  }else if (responseData.length == response.data.datas.list.pageSize){
+                  }else if (responseData.length == response.data.datas.list.pageSize && responseData.length < response.data.datas.list.totalSize){
                     sessionStorage.setItem('toBeGeneratedPageNum',response.data.datas.list.pageNumber);
+                  }else {
+                    self.allLoadedIndex = true;
                   }
                 }else {
                   self.billList = [];

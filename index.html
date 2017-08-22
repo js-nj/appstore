@@ -10,6 +10,12 @@
     <link rel="stylesheet" href="./static/mobile/css/bh.min.css">
     <link rel="stylesheet" href="./static/mobile/css/bh-scenes.min.css">
     <link rel="stylesheet" href="http://cdnres.campusphere.cn/fe_components/iconfont_mobile/iconfont.css">
+    <style type="text/css">
+        .box{
+          overflow: auto;
+          -webkit-overflow-scrolling: touch;
+        }
+    </style>
     <script>
     //声明_czc对象:
     window._czc = window._czc || [];
@@ -18,8 +24,11 @@
     </script>
 </head>
 
-<body>
+<body class="box">
     <div id="app"></div>
+    <!-- <div class="scroll" style="height:1500px">
+        
+    </div> -->
     <script type="text/javascript">
         // // 授权，完成后重定向到项目
         (function () {
@@ -51,17 +60,6 @@
                 var wechat_redirect_uri_index = wechat_redirect_uri.split('?code=')[0];
                 console.log('wechat_redirect_uri_index:' + wechat_redirect_uri_index);
 
-                // var wechat_redirect_uri_hash = wechat_redirect_uri.split('&state=123')[1];
-                // console.log('wechat_redirect_uri_hash:' + wechat_redirect_uri_hash);
-
-                // wechat_redirect_uri = wechat_redirect_uri_index + wechat_redirect_uri_hash;
-                // console.log('wechat_redirect_uri:' + wechat_redirect_uri);
-
-                // wechat_redirect_uri = encodeURIComponent(wechat_redirect_uri);
-                // var wechat_state = wechat_redirect_uri_hash + '&type=wxShare'; //'wxShare';
-                // wechat_state = wechat_state.split('#/')[1];
-                // console.log('wechat_state:' + wechat_state);
-                // wechat_state = escape(wechat_state);
                 if (wechat_redirect_uri.indexOf('&state=123')>-1) {
                     var wechat_redirect_uri_hash = wechat_redirect_uri.split('&state=123')[1];  
                 }else if (wechat_redirect_uri.indexOf('&state=wxShare')>-1){
@@ -79,30 +77,12 @@
         }else {
            console.log('分享首页'); 
         }
-
-            // console.log('index1111111111111111111111')
-            // console.log('12:'+window.location.href);
-            // var totalUrl = window.location.href.split('#/');
-            // var targetIndex = totalUrl[0];
-            // var targetHash = totalUrl[1];
-            // //一个地址两个微信分享标识
-            // if (targetIndex && targetIndex.indexOf('&from=')>-1 && targetHash && targetHash.indexOf('&from=')>-1) {
-            //     targetIndex = targetIndex.split('&from=')[0];
-            // }
-            // console.log('targetIndex:'+targetIndex)
-            // //console.log('targetIndex:'+targetIndex);
-            // var stateItem = targetIndex.split('&state=')[1];
-            // stateItem = stateItem.split('&')[0];
-            // var decodeStateItem = decodeURIComponent(targetIndex.split('&state=')[1]);
-            // decodeStateItem = decodeStateItem.replace(/\$/g,'&');
-            // console.log('stateItem:'+stateItem);
-            // if (stateItem != '123') {
-            //     targetIndex = targetIndex.replace(stateItem,'123');
-            //     console.log('11:'+targetIndex +'#/'+ decodeStateItem);
-            //     window.location.href = targetIndex +'#/'+ decodeStateItem;   
-            // }else {
-            //     console.log('分享首页');
-            // }
+        window.scrollCallback = function(evt) {
+            if (!evt._isScroller) {
+                evt.preventDefault();
+            }
+        };
+            
         })();
     </script>
     <script src="dist/build.js"></script>

@@ -1,5 +1,5 @@
 <template>
-    <div class="custom-case-contaier"><!-- :style="{height:customTabContentHeight}" -->
+    <div class="custom-case-contaier" >
         <h3 v-if="this.details.TYPE == 'indexView'" class="bh-ph-16 bh-pv-16 custom-name">{{details.SCHOOL_BM_DISPLAY}}</h3>
         <h4 v-else class="bh-ph-16 bh-pv-16 custom-name">{{details.SCHOOL_BM_DISPLAY}}</h4>
         <div v-if="this.details.TYPE == 'indexView'">
@@ -25,22 +25,12 @@
             <div class="">
                 <div class="bh-pb-8">
                     <span class="custom-use-circle bh-bColor-primary-lv1"></span>
-                    <!-- <div class="bh-ph-4 custom-use-content">项目背景及技术优势</div> -->
                     <div class="bh-ph-4 custom-use-content">案例介绍</div>
                 </div>
                 <div class="bh-color-gray-lv2 custom-use-detail" v-html="details.INFORMATION">
                     
                 </div>
             </div>
-            <!-- <div class="">
-                <div class="bh-pv-8">
-                    <span class="custom-use-circle bh-bColor-warning-lv1"></span>
-                    <div class="bh-ph-4 custom-use-content">客户收益</div>
-                </div>
-                <div class="bh-color-gray-lv2 custom-use-detail" v-html="details.INCOME">
-                   
-                </div>
-            </div> -->
         </div>
     </div>
 </template>
@@ -85,6 +75,7 @@
 </style>
 <script>
     import { Swipe, SwipeItem ,Toast} from 'bh-mint-ui2';
+    import wechatShare from '../../static/mobile/js/wechatShare.js';
     import api from '../api.js';
     import axios  from 'axios';
     export default {
@@ -105,7 +96,10 @@
         created() { 
             //设置bill中间内容部分的高度
             this.customTabContentHeight = document.body.clientHeight +'px';
-            
+            // setTimeout(function(){
+            //     console.log('preventBodyScroll -subc')
+            //     wechatShare.preventBodyScroll();
+            // },1000);
         },
         // beforeUpdate() {
         //     console.log('this.details');

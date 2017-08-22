@@ -63,17 +63,11 @@
                     this.$router.push({
                       name: 'app',
                       query: param
-                      // query: {
-                      //   item: JSON.stringify(param)
-                      //  }
                     });
                 }else if (param.PAGETYPE == 'custom') {
                     this.$router.push({
                       name: 'custom',
                       query: param
-                      // query: {
-                      //     item: JSON.stringify(param)
-                      //   }
                     });
                 }
             }

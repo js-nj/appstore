@@ -1,6 +1,6 @@
 <template>
-    <div class="bill-list-container" :style="{height:billItemHeight}">
-        <mt-loadmore :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" :autoFill="false" ref="loadmore1">
+    <div class="bill-list-container" style="overflow: auto;padding-bottom: 50px;" :style="{height:billItemHeight}" class="scroll">
+        <mt-loadmore :bottom-method="loadBottom" :bottom-all-loaded="allLoaded" :autoFill="false" ref="loadmore1" >
             <ul>
                 <li v-for="item in items" class="as-list bh-ph-16 as-pv-10 bh-clearfix" >
                     <div class="bill-list-radio bh-pl-8">
@@ -11,16 +11,18 @@
                             </label>
                         </div>
                     </div>
-                    <div class="bill-list-des" @click="goAppDetailPage(item)">
-                        <p class="bh-pv-8 as-list-title">
-                            <label>{{item.NAME1}}</label>
-                        </p>
-                        <div class="bh-pv-4 bh-mt-4 as-list-service bh-color-gray-lv1">
-                            <label >正在服务学校</label>
-                            <label class="bh-l-inline bh-ph-16 bh-color-primary-lv1" style="font-weight:800;">{{item.SCHOOL_COUNT}}</label>
+                    <div @click="goAppDetailPage(item)" style="float:left;overflow:auto;width: 88%;">
+                        <div class="bill-list-des">
+                            <p class="bh-pv-8 as-list-title">
+                                <label>{{item.NAME1}}</label>
+                            </p>
+                            <div class="bh-pv-4 bh-mt-4 as-list-service bh-color-gray-lv1">
+                                <label >正在服务学校</label>
+                                <label class="bh-l-inline bh-ph-16 bh-color-primary-lv1" style="font-weight:800;">{{item.SCHOOL_COUNT}}</label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="bill-list-img"><img :src="item.IMAGE" :class="{'as-college':item.TYPE == 'custom'}" onerror='this.src="./static/assets/logo.png"'/></div>
+                        <div class="bill-list-img"><img :src="item.IMAGE" :class="{'as-college':item.TYPE == 'custom'}" onerror='this.src="./static/assets/logo.png"'/></div>
+                    </div> 
                 </li>
                 <div class="as-nullData bh-color-gray-lv2" v-show="allLoaded && items.length>5">暂无更多数据</div>
             </ul>   
@@ -41,6 +43,10 @@
     </div>
 </template>
 <style>
+.bill-list-container .as-nullData {
+    line-height: 40px;
+    height: 40px;
+}
 .as-list {
     background-color: #fff;
 }
@@ -62,7 +68,7 @@
 }
 .bill-list-des {
     float: left;
-    width: 62%;
+    width: 71%;
 }
 .as-list-title {
     font-weight: 600;
@@ -72,7 +78,7 @@
 }
 .bill-list-img {
     float: left;
-    width: 25%;
+    width: 29%;
     overflow: hidden;
 }
 .bill-list-img img {
@@ -160,6 +166,7 @@
     import { Swipe, SwipeItem ,Checklist,Cell,Toast,Loadmore} from 'bh-mint-ui2';
     import api from '../api.js';
     import axios  from 'axios';
+    import wechatShare from '../../static/mobile/js/wechatShare.js';
     export default {
         data () {
             return {
@@ -212,6 +219,10 @@
         created() {
             //设置bill中间内容部分的高度
             this.billItemHeight = (document.body.clientHeight - 51 - 40 - 51) + 'px';//51是底部导航栏、tag的高度 40是顶部tab头的高度 48是按钮排的高度
+            setTimeout(function(){
+                console.log('preventBodyScroll-billitem')
+                wechatShare.preventBodyScroll();
+            },100);
         },
         methods: {
             selectAllItems() {
@@ -222,9 +233,6 @@
                     that.items.forEach(function(item){
                         that.selectedItems.push(item.APP_ID);
                     });
-                    // that.items.forEach(function(item){
-                    //     that.selectedItemsWid.push(item.WID);
-                    // });
                 }else {
                     that.selectedItems = [];
                     that.selectedItemsWid= [];
@@ -308,9 +316,6 @@
                 this.$router.push({
                   name: 'billDetail',
                   query:item
-                  // query: {
-                  //     param: JSON.stringify(item)
-                  // }
                 });
             },
             goAppDetailPage(item) {
@@ -319,10 +324,7 @@
                   query: {
                     WID:item.WID,
                     APP_ID:item.APP_ID
-                }
-                  // query: {
-                  //   item: JSON.stringify(item)
-                  // }
+                  }
                 });
             },
             loadBottom(){

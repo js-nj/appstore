@@ -4,7 +4,6 @@
 
 export default {
 	yyfx: WEBPACK_CONIFG_HOST + "sys/appstoreservice/sjzds/yyfx.do", //应用类型(字典表)
-	// schools: WEBPACK_CONIFG_HOST + "sys/appstoreservice/sjzds/schools.do",
 	appsLbtList: WEBPACK_CONIFG_HOST + "sys/appstoreservice/apps/lbtList.do", //轮播图
 	appsRmyyList: WEBPACK_CONIFG_HOST + "sys/appstoreservice/apps/rmyyList.do", //热门应用
 	appsZxyyList: WEBPACK_CONIFG_HOST + "sys/appstoreservice/apps/zxyyList.do", //最新应用

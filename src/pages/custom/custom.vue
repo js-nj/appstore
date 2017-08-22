@@ -1,14 +1,6 @@
 <template>
     <div >
         <custom-case :details="info" :targetApp="targetApp" :style="{height:customContentHeight}"></custom-case>
-        <!-- <div class="bh-ph-16 bh-pv-8 custom-buttonContainer">
-            <a class="app-tel-line" :href="telephone" style="color:#fff;">
-               <mt-button type="warning" size="large" class="custom-button">
-               联系我们
-               </mt-button>
-            </a>
-        </div>
-        <div></div> -->
     </div>
 </template>
 <style>
@@ -82,10 +74,9 @@
                         var targetUrl = window.location.href.split('#/')[0];
                         var targetPage = encodeURIComponent(targetUrl.split('?')[0]);
                         var targetUrlHash = window.location.href.split('#/')[1];
-                        //targetUrlHash = targetUrlHash.replace(/\&/g,'$');
-                        // var wechatUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3580fbc434aacf74&redirect_uri='+ targetPage +'&response_type=code&scope=snsapi_userinfo&state='+targetUrlHash+'#wechat_redirect';
+   
                         var tmpHref = window.location.href;
-                        //tmpHref = tmpHref.replace('123',targetUrlHash);
+
                         tmpHref = tmpHref.replace('#/',',');
                         wechatShare.wechatShare({
                             title: that.info.SCHOOL_BM_DISPLAY, // 分享标题

@@ -1,5 +1,5 @@
 <template>
-    <div class="bh-mt-16 bill-generated-content">
+    <div class="bh-mt-16 bill-generated-content" :style="{height:billGeHeight}" class="scroll" style="overflow:auto;">
         <mt-loadmore :bottom-method="loadBottom2" :bottom-all-loaded="allLoaded2" ref="loadmore2">
             <ul class="as-lists">
                 <li v-for="item in items" class="as-list bh-pl-16" @click="goBillDetailPage(item)">
@@ -40,11 +40,11 @@
 </style>
 <script>
     import { Swipe, SwipeItem ,Checklist,Cell} from 'bh-mint-ui2';
-
+    import wechatShare from '../../static/mobile/js/wechatShare.js';
     export default {
         data () {
             return {
-                
+                billGeHeight:''
             }
         },
         props:{
@@ -64,6 +64,19 @@
                 }
             }
         },
+        created() {
+            // setTimeout(function(){
+            //     console.log('preventBodyScroll -billg')
+            //     wechatShare.preventBodyScroll();
+            // },1000);
+            //设置bill中间内容部分的高度
+            this.billGeHeight = (document.body.clientHeight - 51 - 40) + 'px';//51是底部导航栏、tag的高度 40是顶部tab头的高度
+            console.log(document.querySelectorAll('.scroll'))
+            setTimeout(function(){
+                console.log('preventBodyScroll-ge-bige')
+                wechatShare.preventBodyScroll();
+            },100);
+        },
         methods: {
             goBillDetailPage(item) {
                 delete item.CJSJ;
@@ -75,9 +88,6 @@
                 this.$router.push({
                   name: 'billDetail',
                   query: item
-                  // query: {
-                  //     param: JSON.stringify(item)
-                  // }
                 });
             },
             loadBottom2(){

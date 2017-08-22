@@ -130,9 +130,6 @@
                     this.$router.push({
                       name: 'app',
                       query: item
-                      // query: {
-                      //   item: JSON.stringify(item)
-                      // }
                     });
                 }else if (item.TYPE == 'custom') {
                     if (item.PARENTTYPE && item.PARENTTYPE =='school') {
@@ -142,9 +139,6 @@
                         this.$router.push({
                           name: 'custom',
                           query:item
-                            // query: {
-                            //     item: JSON.stringify(item)
-                            // }
                         });  
                     }    
                 }

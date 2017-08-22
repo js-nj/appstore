@@ -12,14 +12,10 @@
 .slide-left-enter, .slide-right-leave-active {
   opacity: 0 !important;
   -webkit-transform: translateX(100%) !important;
-  /*-webkit-transform: translate(30px, 0);
-  transform: translate(30px, 0);*/
 }
 .slide-left-leave-active, .slide-right-enter {
   opacity: 0 !important;
   -webkit-transform: translateX(-100%) !important;
-  /*-webkit-transform: translate(-30px, 0);
-  transform: translate(-30px, 0);*/
 }
 .hid{
   position: fixed;
@@ -33,14 +29,13 @@
             	transitionName: 'slide-left'
             }
         },
-        // created(){
-        //   document.body.setAttribute("class","hid");
-        // },
-        // destroyed(){
-        //   document.body.removeAttribute("class","hid");
-        // },
         watch: {
-           '$route'() {
+           '$route'(e) {
+              console.log('$route')
+              console.log(e)
+              console.log('removeEventListener')
+              document.body.removeEventListener('touchmove', scrollCallback);
+
               if (_czc) {
                  var location = window.location;
                  var content_url = location.pathname + location.hash;

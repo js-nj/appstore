@@ -8,7 +8,6 @@ import billDetail from './pages/bill/billDetail.vue';
 import notFoundComponent from './pages/notFoundComponent/notFoundComponent.vue';
 
 export default {
-	//mode: 'history',
 	routes: [{
 		path: '/',
 		name: 'index',
@@ -37,21 +36,11 @@ export default {
 		path: '/billDetail',
 		name: 'billDetail',
 		component: billDetail
-	}
-	// , {
-	// 	path: '*',
-	// 	name: 'notFoundComponent',
-	// 	component: notFoundComponent
-	// }
-	],
+	}],
 	scrollBehavior(to, from, savedPosition) {
-		// if (savedPosition) {
-		// 	return savedPosition
-		// } else {
 		return {
 			x: 0,
 			y: 0
 		}
-		// }
 	}
 };

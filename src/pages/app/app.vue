@@ -10,7 +10,7 @@
         <div class="bh-clearfix bh-pl-16 bh-pv-8 app-info bh-color-gray-lv2">
             <div style="border-top: solid 1px #eee;">
                 <div class="app-col-6 bh-pv-8">终端类型：<label> {{appInfo.TYPE}}</label></div>
-                <div class="app-col-6 bh-pv-8">版本号：<label>{{appInfo.VERSION}} </label></div>
+                <div class="app-col-6 bh-pv-8" style="display:none;">版本号：<label>{{appInfo.VERSION}} </label></div>
                 <div class="app-col-6 bh-pv-8">价格（￥）：<label>{{appInfo.PRICE}} </label></div>
                 <div class="app-col-6 bh-pv-8">厂商：<label>{{appInfo.FACTORY}} </label></div>
                 <div class="app-col-12 bh-pv-8">标签：<label>{{appInfo.BQ_DISPLAY}} </label></div>
@@ -29,7 +29,10 @@
                     <div class="app-intro-video" v-if="introduction.VIDEO_URL">
                         <iframe class="app-intro-video-iframe" :src="introduction.VIDEO_URL" allowFullScreen="true" quality="high" width="100%" height="230" align="middle" allowScriptAccess="always" type="application/x-shockwave-flash"></iframe>
                     </div>
-                    <div class="app-intro-text bh-ph-8 bh-pt-16 bh-pb-32 bh-mb-24" v-html="introduction.APP_INTRODUCE"></div>
+                    <div class="app-intro-text bh-ph-8 bh-pt-16" v-html="introduction.APP_INTRODUCE"></div>
+                    <div style="width:100%;height:36px;margin-bottom: 60px;">
+                        <button v-if="Number(appInfo.SCHOOL_COUNT)!=0" class="app-intro-button" @click="goSchoolPage(appInfo)">查看所有学校</button>
+                    </div>
                 </div>   
               </mt-tab-container-item>
               <mt-tab-container-item id="case">
@@ -178,6 +181,17 @@
     text-overflow: ellipsis;
     vertical-align: top;
 }
+.app-intro-button {
+    width: 90%;
+    margin: 0 auto;
+    height: 36px;
+    border: solid 1px #ddd;
+    color: #666;
+    background-color: #f6f6f6;
+    text-align: center;
+    display: inherit;
+    border-radius: 4px;
+}
 </style>
 <script>
     import { Button ,Navbar, TabItem, TabContainer,MessageBox,Toast} from 'bh-mint-ui2';
@@ -202,31 +216,14 @@
         methods:{
             appMain() {
                 var that = this;
-                //console.log('appUrl:'+appUrl);
                 var routeApp = {};
-                //console.log('this.$route.query:'+that.$route.query);
                 routeApp = that.$route.query;
-                // if (that.$route.query) {
-                //     routeApp = that.$route.query; 
-                // }else {
-                //     var widArray = appUrl.split('app?')[1];
-                //     var targetId = widArray.split('&')[0];
-                //     var targetKey = targetId.split('=')[0];
-                //     var targetValue = targetId.split('=')[1];
-                //     routeApp[targetKey] = targetValue;    
-                // }
-
-                //var routeApp = JSON.parse(this.$route.query.item);
                 if (localStorage.getItem("asBillUncheck") == 'true') {
                     that.asBillUncheck = true;
                 }
                 //设置billdetail框部分的高度
                 this.appContainerHeight = (document.body.clientHeight) + 'px';
                 BH_MIXIN_SDK.setTitleText('应用详情');
-                //微信分享
-                // window.header = routeApp.NAME1;
-                // window.describe = '正在服务学校 '+routeApp.SCHOOL_COUNT;
-                // window.image = routeApp.IMAGE;
                 //应用详情
                 var option = {
                     WID:routeApp.APP_ID?routeApp.APP_ID : routeApp.WID
@@ -255,22 +252,6 @@
                         var targetPage = encodeURIComponent(targetUrl.split('?')[0]);
                         var targetUrlHash = window.location.href.split('#/')[1];
                         targetUrlHash = targetUrlHash.split('&type=')[0];
-                        //targetUrlHash = targetUrlHash.replace(/\&/g,'$');
-
-                        // //进一步处理参数中中文
-                        // var chineseName = targetUrlHash.match(/\$NAME1=(\S+)\$/g);
-                        // console.log('chineseName:'+chineseName)
-                        // var chineseNameArray = chineseName[0].split('=')[1];
-                        // console.log('chineseNameArray:'+chineseNameArray)
-                        // var targetString = chineseNameArray.split('$')[0];
-                        // console.log('targetString:'+targetString);
-                        // console.log(decodeURIComponent(targetString))
-                        // var escapeString = escape(decodeURIComponent(targetString));
-                        // targetUrlHash = targetUrlHash.replace(targetString,escapeString);
-
-                        // var wechatUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3580fbc434aacf74&redirect_uri='+ targetPage +'&response_type=code&scope=snsapi_userinfo&state='+targetUrlHash+'#wechat_redirect';
-                        // 
-                        //var wechatUrl = 'http://appstoretest.wisedu.com/emap/sys/appstoreservice/index.html?&state='+targetUrlHash;
                         
                         var tmpHref = window.location.href;
                         console.log('99999999:'+window.location.href);
@@ -307,7 +288,7 @@
                     Toast('获取详情数据失败');
                   }
                 }).catch(function(err){
-                  Toast(err);
+                  //Toast(err);
                 });
                 //应用tab介绍
                 axios({
@@ -343,26 +324,11 @@
                   if (response.data.code == 0) {
                     if (response.data.datas.customer.rows && response.data.datas.customer.rows.length>0) {
                         that.customInfo = response.data.datas.customer.rows[0];
-
-                        // console.log('that.customInfo');
-                        // console.log(that.customInfo.INFORMATION);
-                        // console.log('that.customInfo end');
                         if(that.customInfo.INFORMATION){
-                            //console.log('old:'+that.customInfo.INFORMATION);
                             var regString = /getFileByToken\/(\w+)\.do/g;
                             that.customInfo.INFORMATION = that.customInfo.INFORMATION.replace(regString,'getSingleImageByToken.do?fileToken=$1&type=3');
-                            //console.log('old:'+this.details.INFORMATION);
                             that.customInfo.INFORMATION = that.customInfo.INFORMATION.replace(/\\/g,'');
-                            //console.log('new:'+that.customInfo.INFORMATION);
                         }
-                        // if (that.customInfo.INFORMATION) {
-                        //     that.customInfo.INFORMATION = that.customInfo.INFORMATION.replace(/\\r/g,' ');
-                        //     that.customInfo.INFORMATION = that.customInfo.INFORMATION.replace(/\\n/g,'<br/>');
-                        // }
-                        // if (that.customInfo.INCOME) {
-                        //     that.customInfo.INCOME = that.customInfo.INCOME.replace(/\\r/g,' ');
-                        //     that.customInfo.INCOME = that.customInfo.INCOME.replace(/\\n/g,'<br/>');
-                        // }
                     }
                   }else {
                     Toast('获取案例数据失败');
@@ -372,22 +338,22 @@
                 });
                 //检查应用是否已经加入清单
                 axios({
-                    method:"POST",
-                    url:api.checkBills,
-                    params:appOption
+                   method:"POST",
+                   url:api.checkBills,
+                   params:appOption
                 }).then(function(response){
-                  if (response.data.code == 0) {
-                    if (response.data.datas.checkBills.totalSize>0) {
-                        that.billSelectedTag = true;
-                    }else {
-                        that.billSelectedTag = false;
-                    }
-                  }else {
-                    Toast('检查应用是否加入清单失败');
-                  }
+                 if (response.data.code == 0) {
+                   if (response.data.datas.checkBills.totalSize>0) {
+                       that.billSelectedTag = true;
+                   }else {
+                       that.billSelectedTag = false;
+                   }
+                 }else {
+                   //Toast('检查应用是否加入清单失败');
+                 }
                 }).catch(function(err){
-                  Toast(err);
-                });
+                    Toast(err);
+                }); 
                 //设置app tab框部分的高度
                 this.appTabContainerHeight = (document.body.clientHeight - 46 - 79 - 109) + 'px';//46是底部导航栏的高度 79是顶部tab头的高度,109是标签描述
 
@@ -411,6 +377,7 @@
                 });
             },
             goSchoolPage(item) {
+                //var routeApp = this.$route.query;
                 if (Number(item.SCHOOL_COUNT)>0) {
                     this.$router.push({
                       name: 'school',
@@ -418,7 +385,7 @@
                         item: JSON.stringify(item)
                       }
                     });
-                }  
+                }
             },
             goContactionPage() {
                 var queryObject = this.$route.query;
@@ -429,9 +396,6 @@
                 this.$router.push({
                   name: 'contaction',
                   query:item
-                  // query:{
-                  //   item:JSON.stringify(item)
-                  // }
                 });
             },
             goBillPage() {

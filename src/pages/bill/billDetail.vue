@@ -80,12 +80,9 @@
               var targetUrl = window.location.href.split('#/')[0];
               var targetPage = encodeURIComponent(targetUrl.split('?')[0]);
               var targetUrlHash = window.location.href.split('#/')[1];
-              //targetUrlHash = targetUrlHash.replace(/\&/g,'$');
-              //去掉单价.00
-              //targetUrlHash = targetUrlHash.replace(/\.\d{2}/g,'');
-              // var wechatUrl = 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx3580fbc434aacf74&redirect_uri='+ targetPage +'&response_type=code&scope=snsapi_userinfo&state='+targetUrlHash+'#wechat_redirect';
+
               var tmpHref = window.location.href;
-              //tmpHref = tmpHref.replace('123',targetUrlHash);
+
               tmpHref = tmpHref.replace('#/',',');
               // 查询报价单属性（根据wid）
               axios({
@@ -139,29 +136,7 @@
                   }
                 }
               });
-              //查询报价单详情
-              // axios({
-              //     method:"POST",
-              //     url:api.quotationsDetails,
-              //     params:{
-              //         WID:that.parentItem.WID,
-              //         pageNum:1,
-              //         pageSize:999
-              //     }
-              // }).then(function(response){
-              //   if (response.data.code == 0) {
-              //     if (response.data.datas.list.rows && response.data.datas.list.rows.length>0) {
-              //         that.billDetails = response.data.datas.list.rows.map(function(item){
-              //             item.PRICE = item.PRICE.toFixed(2);
-              //             return item;
-              //         });
-              //     } 
-              //   }else {
-              //     Toast('查询报价单详情失败');
-              //   }
-              // }).catch(function(err){
-              //   Toast(err);
-              // });
+              
               //查询系统电话
               axios({
                   method:"POST",
