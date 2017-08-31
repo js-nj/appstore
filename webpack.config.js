@@ -10,43 +10,48 @@ module.exports = {
   },
   module: {
     rules: [{
-      test: /\.vue$/,
-      loader: 'vue-loader',
-      options: {
-        postcss: [require('postcss-cssnext')({
-            features: {
-              rem: false
-            }
-          })
-          // ,
-          // require('postcss-pxtorem')({
-          //   rootValue: 20,
-          //   propWhiteList: []
-          // })
-        ]
+        test: /\.vue$/,
+        loader: 'vue-loader',
+        options: {
+          postcss: [require('postcss-cssnext')({
+              features: {
+                rem: false
+              }
+            })
+            // ,
+            // require('postcss-pxtorem')({
+            //   rootValue: 20,
+            //   propWhiteList: []
+            // })
+          ]
+        }
+      }, {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        exclude: /node_modules/
+      }, {
+        test: /\.css$/,
+        loader: 'style-loader!css-loader'
+      }, {
+        test: /\.(png|jpg|gif|svg)$/,
+        loader: 'file-loader',
+        options: {
+          limit: 10000,
+          name: '[name].[ext]?[hash]'
+        }
+      }, {
+        test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
+        loader: 'url',
+        query: {
+          limit: 10000,
+          name: '[name].[ext]?[hash]'
+        }
       }
-    }, {
-      test: /\.js$/,
-      loader: 'babel-loader',
-      exclude: /node_modules/
-    }, {
-      test: /\.css$/,
-      loader: 'style-loader!css-loader'
-    }, {
-      test: /\.(png|jpg|gif|svg)$/,
-      loader: 'file-loader',
-      options: {
-        limit: 10000,
-        name: '[name].[ext]?[hash]'
-      }
-    }, {
-      test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
-      loader: 'url',
-      query: {
-        limit: 10000,
-        name: '[name].[ext]?[hash]'
-      }
-    }]
+      // , {
+      //   test: /vue-preview.src.*?js$/,
+      //   loader: 'babel'
+      // }
+    ]
   },
   resolve: {
     extensions: ['.js', '.vue', '.json'],
@@ -63,7 +68,7 @@ module.exports = {
     disableHostCheck: true,
     noInfo: true,
     host: '0.0.0.0',
-    port: 9009
+    port: 9010
   },
   performance: {
     hints: false

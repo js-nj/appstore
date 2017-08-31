@@ -94,6 +94,44 @@ var wechatShare = {
         console.log(document.querySelectorAll('.scroll'));
         overscroll(document.querySelectorAll('.scroll'));
         document.body.addEventListener('touchmove', scrollCallback);
+    },
+    setImagePhotoSwipe: function(ele) {
+        setTimeout(function() {
+            var targetImgs = document.querySelectorAll(ele);
+            console.log('photoswipe 结构替换开始,替换个数为' + targetImgs.length);
+            for (var i = 0; i < targetImgs.length; i++) {
+                var targetImg = targetImgs[i];
+                var targetImgSrc = targetImg.src;
+                var newImgUrl = '';
+
+                var rw = targetImg.naturalWidth; // 真实图片宽度
+                var rh = targetImg.naturalHeight; //真实图片高度
+
+                var largeImgSize = rw + 'x' + rh;
+                targetImg.className = 'my-picture-small';
+                if (targetImgSrc.indexOf('fileToken') > -1) {
+                    newImgUrl = targetImgSrc.replace(/type=\d+/g, 'type=3');
+                } else {
+                    newImgUrl = targetImgSrc;
+                }
+                if (targetImg.getAttribute("data-img-size-val")) {
+                    largeImgSize = targetImg.getAttribute("data-img-size-val");
+                    largeImgSize = largeImgSize.replace(',', 'x');
+                }
+                var newHtmlImg = '<div class="my-gallery" data-pswp-uid=""><figure><a class="my-picture-large" href="' + newImgUrl + '" data-size="' + largeImgSize + '">' + (targetImg.outerHTML ? targetImg.outerHTML : '') + '</a></figure></div>';
+                console.log('item:-----' + newHtmlImg);
+
+                var newNodeImg = document.createElement("div");
+                newNodeImg.className = 'newNodeImg';
+                newNodeImg.innerHTML = newHtmlImg;
+                //console.log('that.customInfo.INFORMATION');
+                //console.log(that.customInfo.INFORMATION);
+                targetImg.parentNode.replaceChild(newNodeImg, targetImg);
+                //targetImg.parentNode.innerHTML = newHtmlImg;
+            }
+            console.log('photoswipe 结构替换完毕');
+            initPhotoSwipeFromDOM('.my-gallery');
+        }, 50);
     }
 };
 

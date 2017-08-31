@@ -1,5 +1,5 @@
 <template>
-    <div >
+    <div class="as-custome">
         <custom-case :details="info" :targetApp="targetApp" :style="{height:customContentHeight}"></custom-case>
     </div>
 </template>
@@ -64,11 +64,16 @@
                         console.log('that.info end');
                         if(that.info.INFORMATION){
                             console.log('old:'+that.info.INFORMATION);
-                            var regString = /getFileByToken\/(\w+)\.do/g;
-                            that.info.INFORMATION = that.info.INFORMATION.replace(regString,'getSingleImageByToken.do?fileToken=$1&type=3');
+                            // var regString = /getFileByToken\/(\w+)\.do/g;
+                            // that.info.INFORMATION = that.info.INFORMATION.replace(regString,'getSingleImageByToken.do?fileToken=$1&type=3');
                             //console.log('old:'+this.details.INFORMATION);
+                            var regString = /\/emap\/sys\/emapcomponent\/file\/getFileByToken\/(\w+)\.do/g;
+                            var totalUrl = WEBPACK_CONIFG_HOST + "sys/emapcomponent/file/"+"getSingleImageByToken.do?fileToken=$1&type=3";
+                            that.info.INFORMATION = that.info.INFORMATION.replace(regString,totalUrl);
                             that.info.INFORMATION = that.info.INFORMATION.replace(/\\/g,'');
                             console.log('new:'+that.info.INFORMATION);
+                            //设置图片放大功能
+                            wechatShare.setImagePhotoSwipe('.as-custome .custom-use-detail img');
                         }
                         //微信分享
                         var targetUrl = window.location.href.split('#/')[0];

@@ -11,7 +11,7 @@
             <div style="border-top: solid 1px #eee;">
                 <div class="app-col-6 bh-pv-8">终端类型：<label> {{appInfo.TYPE}}</label></div>
                 <div class="app-col-6 bh-pv-8" style="display:none;">版本号：<label>{{appInfo.VERSION}} </label></div>
-                <div class="app-col-6 bh-pv-8">价格（￥）：<label>{{appInfo.PRICE}} </label></div>
+                <div class="app-col-6 bh-pv-8" style="display:none;">价格（￥）：<label>{{appInfo.PRICE}} </label></div>
                 <div class="app-col-6 bh-pv-8">厂商：<label>{{appInfo.FACTORY}} </label></div>
                 <div class="app-col-12 bh-pv-8">标签：<label>{{appInfo.BQ_DISPLAY}} </label></div>
             </div>    
@@ -30,17 +30,18 @@
                         <iframe class="app-intro-video-iframe" :src="introduction.VIDEO_URL" allowFullScreen="true" quality="high" width="100%" height="230" align="middle" allowScriptAccess="always" type="application/x-shockwave-flash"></iframe>
                     </div>
                     <div class="app-intro-text bh-ph-8 bh-pt-16" v-html="introduction.APP_INTRODUCE"></div>
-                    <div style="width:100%;height:36px;margin-bottom: 60px;">
+                    <!-- 去掉按钮的样式更改 margin-bottom: 60px;-->
+                    <div style="width:100%;height:36px;margin-bottom: 20px;">
                         <button v-if="Number(appInfo.SCHOOL_COUNT)!=0" class="app-intro-button" @click="goSchoolPage(appInfo)">查看所有学校</button>
                     </div>
                 </div>   
               </mt-tab-container-item>
               <mt-tab-container-item id="case">
-                <custom-case :details="customInfo" :subTag="true"></custom-case>
+                <custom-case :details="customInfo" :subTag="true" class="app-case-text"></custom-case>
               </mt-tab-container-item>
             </mt-tab-container>
         </div>
-        <div class="app-buttonContainer bh-clearfix bh-text-center">
+        <div class="app-buttonContainer bh-clearfix bh-text-center" style="display:none;">
             <div class="app-button bh-pv-4">
             <div class="app-col-6" ><i class="iconfont icon-dianhua as-color-warning-lv2"></i><div class="app-button-text"><a class="app-tel-line" :href="telephone">联系我</a></div></div>
                 <div class="app-button-line"></div>
@@ -192,6 +193,10 @@
     display: inherit;
     border-radius: 4px;
 }
+/*去掉按钮的样式更改*/
+.mint-tab-container-item {
+    background-color: #fff;
+}
 </style>
 <script>
     import { Button ,Navbar, TabItem, TabContainer,MessageBox,Toast} from 'bh-mint-ui2';
@@ -303,9 +308,13 @@
                             //that.introduction.VIDEO_URL = 'http://player.youku.com/embed/'+ that.introduction.VIDEO_URL;
                             that.introduction.VIDEO_URL = that.introduction.VIDEO_URL;
                         }
-                        var regString = /getFileByToken\/(\w+)\.do/g;
-                        that.introduction.APP_INTRODUCE = that.introduction.APP_INTRODUCE.replace(regString,'getSingleImageByToken.do?fileToken=$1&type=3');
+                        var regString = /\/emap\/sys\/emapcomponent\/file\/getFileByToken\/(\w+)\.do/g;
+                        var totalUrl = WEBPACK_CONIFG_HOST + "sys/emapcomponent/file/"+"getSingleImageByToken.do?fileToken=$1&type=3";
+                        that.introduction.APP_INTRODUCE = that.introduction.APP_INTRODUCE.replace(regString,totalUrl);
+
                         that.introduction.APP_INTRODUCE = that.introduction.APP_INTRODUCE.replace(/\\/g,"");
+                        //设置图片放大功能
+                        wechatShare.setImagePhotoSwipe('.app-intro-text img');
                     }else {
                         that.introduction = false; 
                     }
@@ -323,11 +332,18 @@
                 }).then(function(response){
                   if (response.data.code == 0) {
                     if (response.data.datas.customer.rows && response.data.datas.customer.rows.length>0) {
+                        // that.customInfo = {};
                         that.customInfo = response.data.datas.customer.rows[0];
                         if(that.customInfo.INFORMATION){
-                            var regString = /getFileByToken\/(\w+)\.do/g;
-                            that.customInfo.INFORMATION = that.customInfo.INFORMATION.replace(regString,'getSingleImageByToken.do?fileToken=$1&type=3');
+                            // var regString = /getFileByToken\/(\w+)\.do/g;
+                            // that.customInfo.INFORMATION = that.customInfo.INFORMATION.replace(regString,'getSingleImageByToken.do?fileToken=$1&type=3');
+                            var regString = /\/emap\/sys\/emapcomponent\/file\/getFileByToken\/(\w+)\.do/g;
+                            var totalUrl = WEBPACK_CONIFG_HOST + "sys/emapcomponent/file/"+"getSingleImageByToken.do?fileToken=$1&type=3";
+                            that.customInfo.INFORMATION = that.customInfo.INFORMATION.replace(regString,totalUrl);
                             that.customInfo.INFORMATION = that.customInfo.INFORMATION.replace(/\\/g,'');
+
+                            //设置图片放大功能
+                            wechatShare.setImagePhotoSwipe('.app-case-text img');
                         }
                     }
                   }else {

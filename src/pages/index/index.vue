@@ -99,7 +99,7 @@
           </mt-tab-container-item>
         </mt-tab-container>
         <!-- tabbar -->
-        <mt-tabbar v-model="selected" :fixed='true' class="as-index-tabbar">
+        <mt-tabbar v-model="selected" :fixed='true' class="as-index-tabbar" style="display:none;">
           <mt-tab-item id="bestRecomend">
             <div>
               <div class="tab-icon" :class="classBestRecomend"></div>
@@ -857,7 +857,8 @@ header.mint-header {
     padding-right: 8px;
 }
 .as-content {
-  padding-bottom: 51px;
+  /*去掉按钮的样式更改*/
+  /*padding-bottom: 51px;*/
 }
 .as-search {
   position: absolute;
