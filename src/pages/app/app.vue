@@ -41,17 +41,23 @@
               </mt-tab-container-item>
             </mt-tab-container>
         </div>
-        <div class="app-buttonContainer bh-clearfix bh-text-center" style="display:none;">
+        <div class="app-buttonContainer bh-clearfix bh-text-center">
             <div class="app-button bh-pv-4">
-            <div class="app-col-6" ><i class="iconfont icon-dianhua as-color-warning-lv2"></i><div class="app-button-text"><a class="app-tel-line" :href="telephone">联系我</a></div></div>
-                <div class="app-button-line"></div>
-                <div class="app-col-6" style="position:relative;">
+                <div class="app-col-6" >
+                    <i class="iconfont icon-dianhua as-color-warning-lv2"></i>
+                    <div class="app-button-text">
+                        <a class="app-tel-line" :href="telephone">联系我</a>
+                    </div>
+                </div>
+                <div class="app-button-line" style="display:none;"></div>
+                <div class="app-col-6" style="position:relative;display:none;">
                     <i class="iconfont  icon-xuexiaowenjianicon" style="font-weight: 600;"></i>
                     <i class="as-bill-uncheck app-detail" v-show="asBillUncheck"></i>
                     <div class="app-button-text" @click="goBillPage">我的清单</div>
                 </div>
             </div>
-            <div type="warning" class="app-button as-bgColor-warning-lv2 bh-color-white bh-pv-16" :class="{'app-button-disable':billSelectedTag}" @click="addBillItem">加入清单</div>
+            <div type="warning" class="app-button as-bgColor-warning-lv2 bh-color-white bh-pv-16" :class="{'app-button-disable':billSelectedTag}" @click="addBillItem" style="display:none;">加入清单</div>
+            <div type="warning" class="app-button as-bgColor-warning-lv2 bh-color-white bh-pv-16"  @click="iWantIt" style="">我想要</div>
             <div type="warning" class="app-button as-bgColor-warning-lv1 bh-color-white bh-pv-16" @click="goContactionPage">了解更多</div> 
         </div>  
     </div>
@@ -446,6 +452,32 @@
                       Toast(err);
                     });
                 }   
+            },
+            iWantIt(){
+                if (BH_MIXIN_SDK.bh && BH_MIXIN_SDK.bh.cpdaily) {
+                   var userInfo = BH_MIXIN_SDK.bh.cpdaily.getUserInfo();
+                   console.log('userInfo----------------------');
+                   console.log(userInfo);
+                   // axios({
+                   //     method:"POST",
+                   //     url:api.addBill,
+                   //     params:{
+                   //         APP_ID:queryObject.APP_ID ? queryObject.APP_ID : queryObject.WID
+                   //     }
+                   // }).then(function(response){
+                   //   if (response.data.code == 0) {
+                   //     Toast('加入清单成功');
+                   //     that.billSelectedTag = true;
+                   //     that.asBillUncheck = true;
+                   //   }else {
+                   //     Toast('加入清单失败');
+                   //   }
+                   // }).catch(function(err){
+                   //   Toast(err);
+                   // });
+               }else {
+                Toast("请在今日校园中运行");
+               }
             },
             setImgUrlFromId(id) {
                 return WEBPACK_CONIFG_HOST +'sys/appstoreservice/attrs/preview.do?token=' + id+'&type=3';
