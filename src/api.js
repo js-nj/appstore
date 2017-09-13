@@ -34,4 +34,7 @@ export default {
 	//新
 	queryBjdInWechat: WEBPACK_CONIFG_HOST + "sys/appstoreservice/quotations/wxDetails.do", //查询报价单属性及详情
 	queryCustom: WEBPACK_CONIFG_HOST + "sys/appstoreservice/apps/wxCustomer.do", //查询案例属性及详情
+	//我想要
+	iWantIt: WEBPACK_CONIFG_HOST + "sys/appstoreservice/jrxy/save.do", //我想要
+
 }

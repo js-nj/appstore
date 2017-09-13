@@ -319,41 +319,44 @@
                  // 用户取消分享后执行的回调函数
              }
           });
-          //获取url中的code
-          var codeTmp = location.href.split('code=')[1];
-          var weiXincode = '';
-          if (codeTmp.indexOf('&state')>-1) {
-            weiXincode = codeTmp.split('&state')[0];
-          }else {
-            weiXincode = codeTmp.substring(0,codeTmp.length - 2);
-          }
-          //获取用户openid
-          var openidTmp = sessionStorage.getItem("openId");
+          // //获取url中的code
+          // var codeTmp = location.href.split('code=')[1];
+          // var weiXincode = '';
+          // if (codeTmp.indexOf('&state')>-1) {
+          //   weiXincode = codeTmp.split('&state')[0];
+          // }else {
+          //   weiXincode = codeTmp.substring(0,codeTmp.length - 2);
+          // }
+          // //获取用户openid
+          // var openidTmp = sessionStorage.getItem("openId");
 
-          axios({
-              method:"POST",
-              url:api.getUserInfo,
-              params:{
-                  weiXincode:weiXincode,
-                  openId:openidTmp?openidTmp:''
-              }
-          }).then(function(response){
-            //debugger
-            if (response.data.code == 0) {
-              //console.log('获取用户信息成功');
-              //存储用户openid
-              if (response.data.datas.login.rows && response.data.datas.login.rows.length>0) {
-                sessionStorage.setItem("openId",response.data.datas.login.rows[0].openId);
-              }
-              that.requestBestRecomendAjax();
-            }else if(response.data.code == -2){
-              Toast('登陆失败');
-            }else {
-              Toast('获取数据失败');
-            }
-          }).catch(function(err){
-            Toast(err);
-          });
+          // axios({
+          //     method:"POST",
+          //     url:api.getUserInfo,
+          //     params:{
+          //         weiXincode:weiXincode,
+          //         openId:openidTmp?openidTmp:''
+          //     }
+          // }).then(function(response){
+          //   //debugger
+          //   if (response.data.code == 0) {
+          //     //console.log('获取用户信息成功');
+          //     //存储用户openid
+          //     if (response.data.datas.login.rows && response.data.datas.login.rows.length>0) {
+          //       sessionStorage.setItem("openId",response.data.datas.login.rows[0].openId);
+          //     }
+          //     that.requestBestRecomendAjax();
+          //   }else if(response.data.code == -2){
+          //     Toast('登陆失败');
+          //   }else {
+          //     Toast('获取数据失败');
+          //   }
+          // }).catch(function(err){
+          //   Toast(err);
+          // });
+          
+          that.requestBestRecomendAjax();
+
 
           //判断是否有路由跳转信息，有的话，修改默认tab页
           if (sessionStorage.getItem("selectedTab")) {

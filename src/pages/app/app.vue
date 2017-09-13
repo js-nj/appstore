@@ -31,7 +31,7 @@
                     </div>
                     <div class="app-intro-text bh-ph-8 bh-pt-16" v-html="introduction.APP_INTRODUCE"></div>
                     <!-- 去掉按钮的样式更改 margin-bottom: 60px;-->
-                    <div style="width:100%;height:36px;margin-bottom: 20px;">
+                    <div style="width:100%;height:36px;margin-bottom: 60px;">
                         <button v-if="Number(appInfo.SCHOOL_COUNT)!=0" class="app-intro-button" @click="goSchoolPage(appInfo)">查看所有学校</button>
                     </div>
                 </div>   
@@ -43,7 +43,7 @@
         </div>
         <div class="app-buttonContainer bh-clearfix bh-text-center">
             <div class="app-button bh-pv-4">
-                <div class="app-col-6" >
+                <div class="app-col-6" :class="{'app-col-12':envTag}">
                     <i class="iconfont icon-dianhua as-color-warning-lv2"></i>
                     <div class="app-button-text">
                         <a class="app-tel-line" :href="telephone">联系我</a>
@@ -58,7 +58,7 @@
             </div>
             <div type="warning" class="app-button as-bgColor-warning-lv2 bh-color-white bh-pv-16" :class="{'app-button-disable':billSelectedTag}" @click="addBillItem" style="display:none;">加入清单</div>
             <div type="warning" class="app-button as-bgColor-warning-lv2 bh-color-white bh-pv-16"  @click="iWantIt" style="">我想要</div>
-            <div type="warning" class="app-button as-bgColor-warning-lv1 bh-color-white bh-pv-16" @click="goContactionPage">了解更多</div> 
+            <div type="warning" class="app-button as-bgColor-warning-lv1 bh-color-white bh-pv-16" @click="goContactionPage" style="display:none;">了解更多</div> 
         </div>  
     </div>
 </template>
@@ -91,7 +91,7 @@
     float: left;
 }
 .app-col-12 {
-    width: 100%;
+    width: 100% !important;
     float: left;
 }
 .as-color-warning-lv2 {
@@ -221,12 +221,18 @@
                 appTabContainerHeight:'',
                 telephone:'',
                 appContainerHeight:'',
-                asBillUncheck:false
+                asBillUncheck:false,
+                envTag:false
             }
         },
         methods:{
             appMain() {
                 var that = this;
+                if (window.env == 'wx') {
+                    that.envTag = false;
+                }else {
+                    that.envTag = true;
+                }
                 var routeApp = {};
                 routeApp = that.$route.query;
                 if (localStorage.getItem("asBillUncheck") == 'true') {
@@ -454,27 +460,46 @@
                 }   
             },
             iWantIt(){
+                var that = this;
                 if (BH_MIXIN_SDK.bh && BH_MIXIN_SDK.bh.cpdaily) {
-                   var userInfo = BH_MIXIN_SDK.bh.cpdaily.getUserInfo();
-                   console.log('userInfo----------------------');
-                   console.log(userInfo);
-                   // axios({
-                   //     method:"POST",
-                   //     url:api.addBill,
-                   //     params:{
-                   //         APP_ID:queryObject.APP_ID ? queryObject.APP_ID : queryObject.WID
-                   //     }
-                   // }).then(function(response){
-                   //   if (response.data.code == 0) {
-                   //     Toast('加入清单成功');
-                   //     that.billSelectedTag = true;
-                   //     that.asBillUncheck = true;
-                   //   }else {
-                   //     Toast('加入清单失败');
-                   //   }
-                   // }).catch(function(err){
-                   //   Toast(err);
-                   // });
+                   BH_MIXIN_SDK.bh.cpdaily.getUserInfo(function(info){
+                        // alert(JSON.stringify({
+                        //        appId:that.$route.query.APP_ID,//应用id
+                        //        userName:info.name,//用户名
+                        //        userBh:info.studentNo,//学号
+                        //        zw:'0',//职务
+                        //        schoolBh:info.tenant,//学校编码
+                        //        schoolName:info.tenantShortName,//学校名称
+                        //        userTel:info.telePhone,//电话号码
+                        //        userType:info.userRole,//用户类型
+                        //    }));
+                        axios({
+                           method:"POST",
+                           url:api.iWantIt,
+                           params:{
+                               appId:that.$route.query.APP_ID,//应用id
+                               userName:info.name,//用户名
+                               userBh:info.studentNo,//学号
+                               zw:'',//职务
+                               schoolBh:info.tenant,//学校编码
+                               email:info.email,
+                               schoolName:info.tenantShortName,//学校名称
+                               userTel:info.telePhone,//电话号码
+                               userType:info.userRole,//用户类型
+                           }
+                       }).then(function(response){
+                         if (response.data.code == 0) {
+                           Toast('我想要成功');
+                           // that.billSelectedTag = true;
+                           // that.asBillUncheck = true;
+                         }else {
+                           //Toast('加入清单失败');
+                         }
+                       }).catch(function(err){
+                         Toast(err);
+                       });
+                   });
+                   
                }else {
                 Toast("请在今日校园中运行");
                }
